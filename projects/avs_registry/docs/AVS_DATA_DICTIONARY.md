@@ -24,6 +24,7 @@ This dictionary defines the baseline fields for a de-identified adrenal venous s
 | `selectivity_index_right` | numeric | Right selectivity index. |
 | `selectivity_index_left` | numeric | Left selectivity index. |
 | `lateralization_index` | numeric | Lateralization index used for interpretation. |
+| `cosyntropin_used` | categorical | Cosyntropin stimulation used during AVS (Yes/No/Unknown). |
 | `contralateral_suppression` | categorical | Yes/No/Unknown. |
 | `final_interpretation` | categorical | Unilateral right/left, bilateral, non-diagnostic, indeterminate. |
 | `management_plan` | categorical | Surgical/medical/repeat AVS/pending MDT. |

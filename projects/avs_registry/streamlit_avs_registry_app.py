@@ -37,6 +37,7 @@ CSV_COLUMNS = [
     "selectivity_index_right",
     "selectivity_index_left",
     "lateralization_index",
+    "cosyntropin_used",
     "contralateral_suppression",
     "final_interpretation",
     "management_plan",
@@ -125,6 +126,7 @@ def row_from_form(form: dict[str, Any]) -> dict[str, Any]:
         "selectivity_index_right": safe_number(form["si_r"]),
         "selectivity_index_left": safe_number(form["si_l"]),
         "lateralization_index": safe_number(form["li"]),
+        "cosyntropin_used": to_yes_no(form["cosyntropin_used"]),
         "contralateral_suppression": to_yes_no(form["contralateral_suppression"]),
         "final_interpretation": form["final_interpretation"],
         "management_plan": form["management_plan"],
@@ -205,6 +207,7 @@ def entry_tab(data_path: Path) -> None:
         with c3:
             final_interpretation = st.selectbox("Final Interpretation*", options=INTERPRETATION_OPTIONS)
             management_plan = st.selectbox("Management Plan*", options=PLAN_OPTIONS)
+            cosyntropin_used = st.selectbox("Cosyntropin Used", options=[None, True, False], format_func=to_yes_no)
             contralateral_suppression = st.selectbox("Contralateral Suppression", options=[None, True, False], format_func=to_yes_no)
             complication = st.selectbox("Any Procedure Complication", options=[None, True, False], format_func=to_yes_no)
 
@@ -255,6 +258,7 @@ def entry_tab(data_path: Path) -> None:
             "si_r": si_r,
             "si_l": si_l,
             "li": li,
+            "cosyntropin_used": cosyntropin_used,
             "contralateral_suppression": contralateral_suppression,
             "final_interpretation": final_interpretation,
             "management_plan": management_plan,
@@ -285,6 +289,7 @@ def review_tab(df: pd.DataFrame, data_path: Path) -> None:
         "patient_code",
         "sex",
         "age_years",
+        "cosyntropin_used",
         "final_interpretation",
         "management_plan",
         "bilateral_selective",

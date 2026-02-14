@@ -11,6 +11,7 @@ streamlit run projects/avs_registry/streamlit_avs_registry_app.py
 1. Open the **Reporting** tab.
 2. Set output path (default: `projects/avs_registry/reporting/outputs`).
 3. Click **Generate Descriptive Report Artifacts**.
+4. Use **Report History** in the same tab to reopen/download files from prior runs.
 
 ## CLI Reporting
 ```bash

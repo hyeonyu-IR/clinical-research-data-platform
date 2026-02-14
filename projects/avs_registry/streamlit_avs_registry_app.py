@@ -341,6 +341,60 @@ def dashboard_tab(df: pd.DataFrame) -> None:
     st.bar_chart(plan)
 
 
+def _recent_report_runs(report_root: Path, limit: int = 20) -> list[Path]:
+    if not report_root.exists():
+        return []
+    runs = [path for path in report_root.iterdir() if path.is_dir() and path.name.startswith("avs_descriptive_")]
+    runs.sort(key=lambda path: path.stat().st_mtime, reverse=True)
+    return runs[:limit]
+
+
+def _run_artifact_paths(run_dir: Path) -> list[Path]:
+    preferred = [
+        run_dir / "01_summary_metrics.csv",
+        run_dir / "02_yearly_case_volume.csv",
+        run_dir / "03_interpretation_distribution.csv",
+        run_dir / "04_management_distribution.csv",
+        run_dir / "AVS_Descriptive_Report.md",
+    ]
+    existing = [p for p in preferred if p.exists()]
+    if existing:
+        return existing
+    return sorted([p for p in run_dir.iterdir() if p.is_file()])
+
+
+def _render_report_history_panel(report_root: Path) -> None:
+    st.markdown("### Report History")
+    runs = _recent_report_runs(report_root)
+    if not runs:
+        st.info("No prior report runs found in the selected output root.")
+        return
+
+    run_options = {run.name: run for run in runs}
+    selected_name = st.selectbox("Select Previous Report Run", options=list(run_options.keys()))
+    selected_run = run_options[selected_name]
+    st.caption(f"Run directory: {selected_run}")
+
+    artifacts = _run_artifact_paths(selected_run)
+    if not artifacts:
+        st.warning("No artifact files found in the selected run folder.")
+        return
+
+    st.write("Available artifacts:")
+    for artifact in artifacts:
+        col_a, col_b = st.columns([3, 1])
+        with col_a:
+            st.code(str(artifact))
+        with col_b:
+            st.download_button(
+                label=f"Download {artifact.name}",
+                data=artifact.read_bytes(),
+                file_name=artifact.name,
+                mime="text/plain",
+                key=f"history_download_{selected_name}_{artifact.name}",
+            )
+
+
 def reporting_tab(data_path: Path) -> None:
     st.subheader("Report Generation")
     st.caption("Generate timestamped, manuscript-ready descriptive artifacts from the current registry CSV.")
@@ -377,6 +431,9 @@ def reporting_tab(data_path: Path) -> None:
             )
         except Exception as exc:
             st.error(f"Report generation failed: {exc}")
+
+    st.divider()
+    _render_report_history_panel(report_root)
 
 
 def init_sidebar() -> Path:

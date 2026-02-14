@@ -12,6 +12,7 @@ streamlit run projects/avs_registry/streamlit_avs_registry_app.py
 3. Confirm `Reporting Output Root` path.
 4. Click **Generate Descriptive Report Artifacts**.
 5. Review generated file paths and download markdown report if needed.
+6. In **Report History**, select a prior run and download any artifact file (CSV/Markdown) directly.
 
 ## Option B: Command Line
 Script:

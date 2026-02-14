@@ -7,7 +7,12 @@ Streamlit-based data entry and descriptive dashboard for adrenal venous sampling
 streamlit run projects/avs_registry/streamlit_avs_registry_app.py
 ```
 
-## Generate Descriptive Report Artifacts
+## In-App Reporting (Recommended)
+1. Open the **Reporting** tab.
+2. Set output path (default: `projects/avs_registry/reporting/outputs`).
+3. Click **Generate Descriptive Report Artifacts**.
+
+## CLI Reporting
 ```bash
 python projects/avs_registry/reporting/generate_descriptive_report.py \
   --input projects/avs_registry/data/avs/avs_registry.csv \

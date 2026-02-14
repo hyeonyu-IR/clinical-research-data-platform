@@ -3,11 +3,21 @@
 ## Purpose
 Generate reproducible descriptive outputs (CSV + Markdown) from the AVS registry for interim review, QI meetings, and manuscript preparation.
 
-## Script
+## Option A: In Streamlit (Recommended)
+1. Run app:
+```bash
+streamlit run projects/avs_registry/streamlit_avs_registry_app.py
+```
+2. Open the **Reporting** tab.
+3. Confirm `Reporting Output Root` path.
+4. Click **Generate Descriptive Report Artifacts**.
+5. Review generated file paths and download markdown report if needed.
+
+## Option B: Command Line
+Script:
 - `projects/avs_registry/reporting/generate_descriptive_report.py`
 
-## Run
-From repository root:
+Run from repository root:
 ```bash
 python projects/avs_registry/reporting/generate_descriptive_report.py \
   --input projects/avs_registry/data/avs/avs_registry.csv \

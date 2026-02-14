@@ -21,7 +21,7 @@ def parse_args() -> argparse.Namespace:
         "--outdir",
         type=Path,
         default=Path("projects/avs_registry/reporting/outputs"),
-        help="Output directory for report artifacts",
+        help="Output directory root for report artifacts",
     )
     return parser.parse_args()
 
@@ -145,14 +145,14 @@ def write_markdown_report(df: pd.DataFrame, summary_df: pd.DataFrame, out_md: Pa
     out_md.write_text("\n".join(lines), encoding="utf-8")
 
 
-def main() -> None:
-    args = parse_args()
+def generate_descriptive_report(input_csv: Path, outdir_root: Path) -> dict[str, Path]:
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    outdir = args.outdir.expanduser().resolve() / f"avs_descriptive_{timestamp}"
+    in_path = input_csv.expanduser().resolve()
+    outdir = outdir_root.expanduser().resolve() / f"avs_descriptive_{timestamp}"
     outdir.mkdir(parents=True, exist_ok=True)
 
-    df = load_and_type(args.input.expanduser().resolve())
+    df = load_and_type(in_path)
     summary_df = summary_table(df)
 
     summary_csv = outdir / "01_summary_metrics.csv"
@@ -192,12 +192,26 @@ def main() -> None:
 
     write_markdown_report(df=df, summary_df=summary_df, out_md=md_path)
 
+    return {
+        "run_dir": outdir,
+        "summary_csv": summary_csv,
+        "year_csv": year_csv,
+        "interpretation_csv": interp_csv,
+        "management_csv": plan_csv,
+        "report_markdown": md_path,
+    }
+
+
+def main() -> None:
+    args = parse_args()
+    artifacts = generate_descriptive_report(input_csv=args.input, outdir_root=args.outdir)
+
     print("Generated report artifacts:")
-    print(f"- {summary_csv}")
-    print(f"- {year_csv}")
-    print(f"- {interp_csv}")
-    print(f"- {plan_csv}")
-    print(f"- {md_path}")
+    print(f"- {artifacts['summary_csv']}")
+    print(f"- {artifacts['year_csv']}")
+    print(f"- {artifacts['interpretation_csv']}")
+    print(f"- {artifacts['management_csv']}")
+    print(f"- {artifacts['report_markdown']}")
 
 
 if __name__ == "__main__":

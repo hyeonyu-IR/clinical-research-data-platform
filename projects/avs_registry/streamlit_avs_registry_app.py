@@ -10,10 +10,13 @@ import uuid
 import pandas as pd
 import streamlit as st
 
+from reporting.generate_descriptive_report import generate_descriptive_report
+
 
 REPO_ROOT = Path(__file__).resolve().parent
 DEFAULT_DATA_PATH = REPO_ROOT / "data" / "avs" / "avs_registry.csv"
 DEFAULT_TEMPLATE_PATH = REPO_ROOT / "data" / "avs" / "avs_registry_template.csv"
+DEFAULT_REPORTING_OUTDIR = REPO_ROOT / "reporting" / "outputs"
 
 CSV_COLUMNS = [
     "record_id",
@@ -338,6 +341,44 @@ def dashboard_tab(df: pd.DataFrame) -> None:
     st.bar_chart(plan)
 
 
+def reporting_tab(data_path: Path) -> None:
+    st.subheader("Report Generation")
+    st.caption("Generate timestamped, manuscript-ready descriptive artifacts from the current registry CSV.")
+
+    report_root_input = st.text_input("Reporting Output Root", value=str(DEFAULT_REPORTING_OUTDIR))
+    report_root = Path(report_root_input).expanduser()
+
+    if st.button("Generate Descriptive Report Artifacts"):
+        try:
+            artifacts = generate_descriptive_report(
+                input_csv=data_path,
+                outdir_root=report_root,
+            )
+            st.success(f"Report generated in: {artifacts['run_dir']}")
+            st.write("Generated files:")
+            st.code(
+                "\n".join(
+                    [
+                        str(artifacts["summary_csv"]),
+                        str(artifacts["year_csv"]),
+                        str(artifacts["interpretation_csv"]),
+                        str(artifacts["management_csv"]),
+                        str(artifacts["report_markdown"]),
+                    ]
+                )
+            )
+
+            md_text = Path(artifacts["report_markdown"]).read_text(encoding="utf-8")
+            st.download_button(
+                label="Download Markdown Report",
+                data=md_text,
+                file_name=Path(artifacts["report_markdown"]).name,
+                mime="text/markdown",
+            )
+        except Exception as exc:
+            st.error(f"Report generation failed: {exc}")
+
+
 def init_sidebar() -> Path:
     st.sidebar.header("Configuration")
     data_path_input = st.sidebar.text_input("Registry CSV Path", value=str(DEFAULT_DATA_PATH))
@@ -360,13 +401,15 @@ def main() -> None:
     data_path = init_sidebar()
     df = typed_frame(load_data(data_path))
 
-    tab1, tab2, tab3 = st.tabs(["Data Entry", "Review / Export", "Dashboard"])
+    tab1, tab2, tab3, tab4 = st.tabs(["Data Entry", "Review / Export", "Dashboard", "Reporting"])
     with tab1:
         entry_tab(data_path)
     with tab2:
         review_tab(df, data_path)
     with tab3:
         dashboard_tab(df)
+    with tab4:
+        reporting_tab(data_path)
 
 
 if __name__ == "__main__":

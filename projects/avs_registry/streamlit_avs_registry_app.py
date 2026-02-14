@@ -38,6 +38,8 @@ CSV_COLUMNS = [
     "selectivity_index_left",
     "lateralization_index",
     "cosyntropin_used",
+    "cosyntropin_route",
+    "cosyntropin_dose",
     "contralateral_suppression",
     "final_interpretation",
     "management_plan",
@@ -127,6 +129,8 @@ def row_from_form(form: dict[str, Any]) -> dict[str, Any]:
         "selectivity_index_left": safe_number(form["si_l"]),
         "lateralization_index": safe_number(form["li"]),
         "cosyntropin_used": to_yes_no(form["cosyntropin_used"]),
+        "cosyntropin_route": str(form["cosyntropin_route"]).strip(),
+        "cosyntropin_dose": safe_number(form["cosyntropin_dose"]),
         "contralateral_suppression": to_yes_no(form["contralateral_suppression"]),
         "final_interpretation": form["final_interpretation"],
         "management_plan": form["management_plan"],
@@ -207,7 +211,9 @@ def entry_tab(data_path: Path) -> None:
         with c3:
             final_interpretation = st.selectbox("Final Interpretation*", options=INTERPRETATION_OPTIONS)
             management_plan = st.selectbox("Management Plan*", options=PLAN_OPTIONS)
-            cosyntropin_used = st.selectbox("Cosyntropin Used", options=[None, True, False], format_func=to_yes_no)
+            cosyntropin_used = st.selectbox("Cosyntropin Used", options=[True, False, None], format_func=to_yes_no)
+            cosyntropin_route = st.selectbox("Cosyntropin Route", options=["infusion", "bolus", "other", "unknown"])
+            cosyntropin_dose = st.text_input("Cosyntropin Dose (mcg)", value="")
             contralateral_suppression = st.selectbox("Contralateral Suppression", options=[None, True, False], format_func=to_yes_no)
             complication = st.selectbox("Any Procedure Complication", options=[None, True, False], format_func=to_yes_no)
 
@@ -259,6 +265,8 @@ def entry_tab(data_path: Path) -> None:
             "si_l": si_l,
             "li": li,
             "cosyntropin_used": cosyntropin_used,
+            "cosyntropin_route": cosyntropin_route,
+            "cosyntropin_dose": cosyntropin_dose,
             "contralateral_suppression": contralateral_suppression,
             "final_interpretation": final_interpretation,
             "management_plan": management_plan,
@@ -290,6 +298,8 @@ def review_tab(df: pd.DataFrame, data_path: Path) -> None:
         "sex",
         "age_years",
         "cosyntropin_used",
+        "cosyntropin_route",
+        "cosyntropin_dose",
         "final_interpretation",
         "management_plan",
         "bilateral_selective",

@@ -21,9 +21,15 @@ Thumbs.db
 *.log
 outputs/
 
-# Operational registry data (never commit PHI or local production datasets)
+# Operational AVS registry data (never commit PHI or production datasets)
 projects/avs_registry/data/avs/*
 !projects/avs_registry/data/avs/.gitkeep
 !projects/avs_registry/data/avs/README.md
 !projects/avs_registry/data/avs/AVS_QUICKSTART.md
 !projects/avs_registry/data/avs/avs_registry_template.csv
+
+# Operational template-project data (keep only structure and template CSV)
+projects/_template_registry/data/project_data/*
+!projects/_template_registry/data/project_data/.gitkeep
+!projects/_template_registry/data/project_data/README.md
+!projects/_template_registry/data/project_data/registry_template.csv

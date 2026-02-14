@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+.venv/
+.env
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Streamlit secrets
+.streamlit/secrets.toml
+
+# Logs and outputs
+*.log
+outputs/
+
+# Operational registry data (never commit PHI or local production datasets)
+projects/avs_registry/data/avs/*
+!projects/avs_registry/data/avs/.gitkeep
+!projects/avs_registry/data/avs/README.md
+!projects/avs_registry/data/avs/AVS_QUICKSTART.md
+!projects/avs_registry/data/avs/avs_registry_template.csv

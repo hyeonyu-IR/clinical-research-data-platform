@@ -33,3 +33,6 @@ projects/_template_registry/data/project_data/*
 !projects/_template_registry/data/project_data/.gitkeep
 !projects/_template_registry/data/project_data/README.md
 !projects/_template_registry/data/project_data/registry_template.csv
+
+# AVS reporting outputs
+projects/avs_registry/reporting/outputs/
